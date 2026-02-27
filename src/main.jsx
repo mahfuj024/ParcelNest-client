@@ -5,11 +5,10 @@ import { RouterProvider } from 'react-router-dom'
 import { router } from './routes/Router.jsx'
 
 
-
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-          <div className='bg-[#EAEDED] urbanist-font'>
-            <RouterProvider router={router} />
-          </div>
+    <div className='bg-[#EAEDED] urbanist-font'>
+      <RouterProvider router={router} />
+    </div>
   </StrictMode>
 )

@@ -87,7 +87,14 @@ function Navbar() {
             Sign In
           </Link>
         )} */}
-        <button className="btn">log in</button>
+        <Link to="/login">
+          <button className="btn bg-white mr-4">Log in</button>
+        </Link>
+
+          <Link to="/register">
+            <button className="btn bg-white ">Register</button>
+          </Link>
+
       </div>
       
     </div>
