@@ -3,7 +3,7 @@ import Logo from "./Shared/Logo"
 
 function Footer() {
   return (
-    <footer className="footer mt-4 md:mt-8 footer-horizontal footer-center bg-black text-white rounded-xl md:rounded-xl py-6 md:py-10 lg:py-20 px-6 md:px-9 lg:px-28">
+    <footer className="footer mt-8 md:mt-12 lg:mt-20 footer-horizontal footer-center bg-black text-white rounded-2xl md:rounded-3xl lg:rounded-4xl py-6 md:py-10 lg:py-20 px-6 md:px-9 lg:px-28">
       <aside className='space-y-4'>
           <Logo></Logo>
         <p className='text-center'>
