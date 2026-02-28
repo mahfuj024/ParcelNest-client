@@ -16,11 +16,15 @@ function Navbar() {
   // };
 
   const navLinks = [
-    { id: "home", path: "/",  label: "Home"},
+    { id: "home", path: "/", label: "Home" },
     { id: "coverage", path: "/coverage", label: "Coverage" },
     { id: "send", path: "/sendParcel", label: "Send A Parcel" },
-    { id: "my", path: "/myParcel", label: "My Parcel" },
-    { id: "rider", path: "/BeARider", label: "Be a Rider" },
+    { id: "about", path: "/aboutUs", label: "About Us" },
+
+    // FIXED
+    { id: "dashboard", path: "/dashboard", label: "Dashboard" },
+
+    { id: "rider", path: "/beArider", label: "Be a Rider" },
   ];
 
   const navItem = navLinks.map(link => (
@@ -29,7 +33,7 @@ function Navbar() {
         to={link.path}
         className={({ isActive }) =>
           `hover:bg-transparent ${isActive ? "bg-primary rounded-full px-4" : ""}`
-      }
+        }
       >
         {link.label}
       </NavLink>
@@ -91,12 +95,12 @@ function Navbar() {
           <button className="btn bg-white mr-4">Log in</button>
         </Link>
 
-          <Link to="/register">
-            <button className="btn bg-white ">Register</button>
-          </Link>
+        <Link to="/register">
+          <button className="btn bg-white ">Register</button>
+        </Link>
 
       </div>
-      
+
     </div>
   );
 }

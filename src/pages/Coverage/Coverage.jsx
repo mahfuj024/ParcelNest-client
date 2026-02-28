@@ -1,3 +1,4 @@
+// Coverage.jsx
 import React, { useState, useEffect, useRef } from "react";
 import useAxiosPublic from "../../hooks/useAxiosPublic";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
@@ -32,14 +33,13 @@ function Coverage() {
   const [search, setSearch] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState(null);
 
-  const markerRefs = useRef([]);
+  const markerRefs = useRef({});
 
   // Load Backend Data
   useEffect(() => {
     const fetchData = async () => {
       try {
         const res = await axiosPublic.get("/warehouses");
-        // Filter only districts with valid latitude and longitude
         const validData = res.data.filter(
           (d) => d.latitude && d.longitude && d.district
         );
@@ -59,7 +59,6 @@ function Coverage() {
 
     if (!searchText) return;
 
-    // Partial match search
     const found = districtData.find((d) =>
       d.district.toLowerCase().includes(searchText)
     );
@@ -67,8 +66,8 @@ function Coverage() {
     if (found) {
       setSelectedDistrict(found);
 
-      // Open popup of the found marker
-      const marker = markerRefs.current[districtData.indexOf(found)];
+      // Open popup
+      const marker = markerRefs.current[found.district];
       if (marker) marker.openPopup();
     } else {
       alert("District not found!");
@@ -102,7 +101,7 @@ function Coverage() {
       </h2>
 
       {/* Map */}
-      <div className="max-w-full h-[426px] rounded-lg overflow-hidden shadow-lg z-0 relative mt-4 md:mt-6 lg:mt-12">
+      <div className="max-w-full h-[435px] md:h-[400px] lg:h-[506px] rounded-lg overflow-hidden shadow-lg z-0 relative mt-4 md:mt-6 lg:mt-12">
         <MapContainer
           center={[23.685, 90.3563]}
           zoom={7}
@@ -111,12 +110,12 @@ function Coverage() {
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {districtData.map((d, i) => (
+          {districtData.map((d) => (
             <Marker
-              key={i}
+              key={d.district}
               position={[d.latitude, d.longitude]}
               icon={customIcon}
-              ref={(el) => (markerRefs.current[i] = el)}
+              ref={(el) => (markerRefs.current[d.district] = el)}
             >
               <Popup>
                 <h3 className="font-bold text-lg text-primary">{d.district}</h3>
