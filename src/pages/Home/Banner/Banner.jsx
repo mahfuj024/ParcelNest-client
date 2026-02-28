@@ -6,7 +6,7 @@ import { Carousel } from 'react-responsive-carousel';
 
 function Banner() {
   return (
-    <div className="mt-6 md:mt-10 lg:mt-15">
+    <div className="mt-4 md:mt-8 lg:mt-12 rounded-xl md:rounded-2xl">
       <Carousel autoPlay={true} infiniteLoop={true} showArrows={false} showStatus={false} showIndicators={false} showThumbs={false} stopOnHover={true}>
         <img src={banner1} alt="" />
         <img src={banner2} alt="" />

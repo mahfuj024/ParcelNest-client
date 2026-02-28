@@ -2,7 +2,7 @@ import serviceImg from "../../../assets/service.png"
 
 function Services() {
     return (
-        <div className='bg-[#03373D] text-white rounded-2xl md:rounded-3xl lg:rounded-4xl mt-8 md:mt-12 lg:mt-20 p-6 md:p-12 lg:p-24'>
+        <div className='bg-[#03373D] text-white rounded-xl md:rounded-2xl mt-8 md:mt-12 lg:mt-20 p-6 md:p-12 lg:p-24'>
             <h1 className='text-center text-3xl lg:text-4xl font-extrabold'>Our Services</h1>
             <p className='text-center text-base mt-4 md:mt-5 lg:mt-7'>Enjoy fast, reliable parcel delivery with real-time tracking and zero hassle. From personal packages to <br /> business shipments — we deliver on time, every time.</p>
 
