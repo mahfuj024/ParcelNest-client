@@ -6,9 +6,13 @@ import {
   FaUser,
   FaUsers,
   FaBoxOpen,
-  FaHistory
+  FaHistory,
+  FaInfoCircle,
+  FaMotorcycle
 } from "react-icons/fa";
 import Logo from "../components/Shared/Logo";
+import { icon } from "leaflet";
+import { MdLocationOn } from "react-icons/md";
 
 function DashboardLayout() {
 
@@ -16,24 +20,49 @@ function DashboardLayout() {
   const location = useLocation();
 
   // 🔥TODO: admin or user from database থেকে আসবে
-  const isAdmin = true; // true = admin | false = user
+  const isAdmin = false; // true = admin | false = user
 
   // User Menu
   const userNavItems = [
     { name: "User Home", path: "user-home", icon: <FaHome /> },
     { name: "My Parcels", path: "my-parcels", icon: <FaBoxOpen /> },
-    { name: "Payment History", path: "payment-history", icon: <FaHistory/> },
+    { name: "Payment History", path: "payment-history", icon: <FaHistory /> },
   ];
 
   // Admin Menu
   const adminNavItems = [
     { name: "Admin Home", path: "admin-home", icon: <FaHome /> },
     { name: "All Users", path: "all-users", icon: <FaUsers /> },
+    { name: "All Parcels", path: "all-parcels", icon: <FaBoxOpen /> },
   ];
 
   // Main Website Menu
   const mainNavItems = [
-    { name: "Home", path: "/", icon: <FaHome /> },
+    {
+      name: "Home",
+      path: "/",
+      icon: <FaHome />
+    },
+    {
+      name: "Coverage",
+      path: "/coverage",
+      icon: <MdLocationOn />
+    },
+    {
+      name: "Send A Parcel",
+      path: "/sendParcel",
+      icon: <FaBoxOpen />
+    },
+    {
+      name: "About Us",
+      path: "/aboutUs",
+      icon: <FaInfoCircle />
+    },
+    {
+      name: "Be a Rider",
+      path: "/beArider",
+      icon: <FaMotorcycle />
+    }
   ];
 
   const navItems = isAdmin ? adminNavItems : userNavItems;
@@ -141,7 +170,7 @@ function DashboardLayout() {
       }
 
       {/* Content */}
-      <main className="flex-1 p-6 bg-[#EAEDED] lg:ml-64 mt-16 lg:mt-0">
+      <main className="flex-1 p-2 bg-[#EAEDED] lg:ml-64 mt-16 md:mt-18 lg:mt-0 min-h-screen">
         <Outlet />
       </main>
 

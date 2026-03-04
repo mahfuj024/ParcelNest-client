@@ -6,11 +6,13 @@ import { useForm } from 'react-hook-form'
 // import Swal from 'sweetalert2'
 import Logo from '../../components/Shared/Logo'
 import LoginWithGoogle from '../LoginWithGoogle/LoginWithGoogle'
+import useAuth from '../../hooks/useAuth'
+import Swal from 'sweetalert2'
 
 function Login() {
 
   const { register, handleSubmit } = useForm()
-  // const { signIn } = useContext(AuthContext)
+  const { signIn } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -21,35 +23,33 @@ function Login() {
     const email = data?.email
     const password = data?.password
 
-    console.log(data)
-
-
-    // signIn(email, password)
-    //   .then((userCredential) => {
-    //     const user = userCredential?.user
-    //     if (user) {
-    //       Swal.fire({
-    //         position: "top-end",
-    //         icon: "success",
-    //         title: "Login successful",
-    //         showConfirmButton: false,
-    //         timer: 1500
-    //       });
-    //       navigate(from, { replace: true })
-    //     }
-    //   })
-    //   .catch(error => {
-    //     const errorMessage = error?.message
-    //     if (errorMessage) {
-    //       Swal.fire({
-    //         position: "top-end",
-    //         icon: "error",
-    //         title: "Invalid email or password ❌",
-    //         showConfirmButton: false,
-    //         timer: 1500
-    //       });
-    //     }
-    //   })
+    signIn(email, password)
+      .then((userCredential) => {
+        const user = userCredential?.user
+        if (user) {
+          Swal.fire({
+            position: "top-end",
+            icon: "success",
+            title: "Login successful",
+            showConfirmButton: false,
+            timer: 1500
+          });
+          // ✅ Login successful হলে আগের page এ যাবে
+          navigate(from, { replace: true });
+        }
+      })
+      .catch(error => {
+        const errorMessage = error?.message
+        if (errorMessage) {
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: `${errorMessage}`,
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
+      })
   }
 
   return (

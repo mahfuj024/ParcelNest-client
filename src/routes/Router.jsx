@@ -20,6 +20,8 @@ import UserHome from "../pages/Dashboard/UserDashboard/UserHome";
 import MyParcels from "../pages/Dashboard/UserDashboard/MyParcels";
 import PaymentHistory from "../pages/Dashboard/UserDashboard/PaymentHistory";
 import AllUsers from "../pages/Dashboard/AdminDashboard/AllUsers";
+import PrivateRoute from "./PrivateRoute";
+import AllParcels from "../pages/Dashboard/AdminDashboard/AllParcels";
 
 
 // Router
@@ -45,7 +47,7 @@ export const router = createBrowserRouter([
 
       {
         path: "sendParcel",
-        element: <SendParcel />
+        element: <PrivateRoute><SendParcel /></PrivateRoute>
       },
 
       {
@@ -55,7 +57,7 @@ export const router = createBrowserRouter([
 
       {
         path: "beArider",
-        element: <BeARider />
+        element: <PrivateRoute><BeARider /></PrivateRoute>
       }
 
     ],
@@ -88,7 +90,7 @@ export const router = createBrowserRouter([
   // Dashboard Layout
   {
     path: "dashboard",
-    element: <DashboardLayout />,
+    element: <PrivateRoute><DashboardLayout /></PrivateRoute>,
 
     children: [
       // user route
@@ -115,8 +117,12 @@ export const router = createBrowserRouter([
         element: <AdminHome />
       },
       {
-        path : "all-users",
-        element : <AllUsers></AllUsers>
+        path: "all-users",
+        element: <AllUsers></AllUsers>
+      },
+      {
+        path : "all-parcels",
+        element : <AllParcels></AllParcels>
       }
 
 

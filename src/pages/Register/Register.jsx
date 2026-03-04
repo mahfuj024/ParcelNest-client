@@ -1,105 +1,96 @@
-import { Link } from 'react-router'
-// import ProfastLogo from '../Shared/ProfastLogo'
-// import LoginWithGoogle from './LoginWithGoogle'
+import { Link, useNavigate } from 'react-router'
 import { useForm } from 'react-hook-form'
 import Logo from '../../components/Shared/Logo'
 import LoginWithGoogle from '../LoginWithGoogle/LoginWithGoogle'
-// import { useContext, useState } from 'react'
-// import { AuthContext } from '../../context/AuthContext'
-// import { ToastContainer, toast } from 'react-toastify';
-// import axios from 'axios'
-// import useAxios from '../../hooks/useAxios'
-// import Swal from 'sweetalert2'
+import Swal from 'sweetalert2'
+import useAuth from '../../hooks/useAuth'
+import axios from 'axios'
+import { useState } from 'react'
+import useAxiosPublic from '../../hooks/useAxiosPublic'
 
 function Register() {
 
   const { register, handleSubmit, formState: { errors } } = useForm()
-  // const { createUser, updateUserProfile } = useContext(AuthContext)
-  // const [profilePic, setProfilePic] = useState("")
-  // const axiosInsTance = useAxios()
-  // const navigate = useNavigate()
-  // const location = useLocation()
-
-  // after register redirect back
-  // const from = location.state?.from?.pathname || "/";
+  const { createUser, updateUserProfile } = useAuth()
+  const [profilePic, setProfilePic] = useState("")
+  const navigate = useNavigate()
+  const axiosPublic = useAxiosPublic()
 
   const onSubmit = (data) => {
     const name = data?.name
     const email = data?.email
     const password = data?.password
 
-    console.log(data)
-    
+    createUser(email, password)
+      .then(async (userCredential) => {
+        const user = userCredential.user
+        if (user) {
 
-    // createUser(email, password)
-    //   .then(async (userCredential) => {
-    //     const user = userCredential?.user
+          //update userInfo in database 
+          const userInfo = {
+            name : name,
+            email: email,
+            role: "user", //default role
+            created_at: new Date().toISOString()
+          }
+          const userRes = await axiosPublic.post("/users", userInfo)
 
-    //     // update user info in database
-    //     const userInfo = {
-    //       email: data.email,
-    //       role: "user", //default role
-    //       created_at: new Date().toISOString(),
-    //       last_log_in: new Date().toISOString
-    //     }
+          // update user profile in firebase
+          const userProfile = {
+            displayName: name,
+            photoURL: profilePic
+          }
+          updateUserProfile(userProfile)
+            .then(() => {
+              Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: `${name} Registration successful`,
+                showConfirmButton: false,
+                timer: 1500
+              });
+              navigate("/")
+            })
+            .catch((error) => {
+              console.log(error)
+            })
 
-    //     const userRes = await axiosInsTance.post("/users", userInfo)
-    //     console.log(userRes.data)
 
-    //     // update user profile in firebase
-    //     const userProfile = {
-    //       displayName: name,
-    //       photoURL: profilePic
-    //     }
-    //     updateUserProfile(userProfile)
-    //       .then(() => {
-    //         console.log("profile name pic is update")
-    //       })
-    //       .catch(error => {
-    //         console.log(error)
-    //       })
-
-    //     if (user) {
-    //       navigate(from, { replace: true })
-    //       Swal.fire({
-    //         position: "top-end",
-    //         icon: "success",
-    //         title: "Registration successful",
-    //         showConfirmButton: false,
-    //         timer: 1500
-    //       });
-    //     }
-    //   })
-    //   .catch(error => {
-    //     const errorMessage = error.message
-    //     if (errorMessage) {
-    //       Swal.fire({
-    //         position: "top-end",
-    //         icon: "error",
-    //         title: "email-already-in-use",
-    //         showConfirmButton: false,
-    //         timer: 1500
-    //       });
-    //     }
-    //   })
-
+        }
+      })
+      .catch((error) => {
+        const errorMessage = error.message
+        if (error) {
+          Swal.fire({
+            position: "top-end",
+            icon: "error",
+            title: `${errorMessage}`,
+            showConfirmButton: false,
+            timer: 1500
+          });
+        }
+      })
   }
 
-  // image url upload in imageBB
-  // const handleImageUpload = async (e) => {
-  //   const image = e.target.files[0]
+  const handleImageUpload = async (event) => {
+    try {
+      const image = event.target.files[0]
 
-  //   const formData = new FormData()
-  //   formData.append("image", image)
+      if (!image) return
 
-  //   const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`
-  //   const res = await axios.post(imageUploadUrl, formData)
+      const formData = new FormData()
+      formData.append("image", image)
 
-  //   setProfilePic(res.data?.data?.url)
+      const imageUploadUrl = `https://api.imgbb.com/1/upload?key=${import.meta.env.VITE_image_upload_key}`
 
+      const res = await axios.post(imageUploadUrl, formData)
 
+      setProfilePic(res.data.data.display_url)
 
-  // }
+    } catch (error) {
+      console.log("Image Upload Error:", error)
+    }
+  }
 
   return (
     <div className='p-2 md:p-4 lg:p-8 min-h-screen'>
@@ -118,7 +109,7 @@ function Register() {
             {/* photo url field */}
             <label htmlFor="file" className="block dark:text-gray-600 font-semibold">Photo url</label>
             <input
-              // onChange={handleImageUpload}
+              onChange={handleImageUpload}
               type="file" name="file" id="file" className="w-full px-4 py-3 rounded-md dark:border-gray-300 outline-1 outline-stone-300 dark:bg-gray-50 dark:text-gray-800 focus:dark:border-violet-600" />
           </div>
           <div className="space-y-1 text-sm">

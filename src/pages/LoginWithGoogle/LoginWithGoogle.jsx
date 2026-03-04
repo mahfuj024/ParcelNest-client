@@ -1,58 +1,60 @@
-// import React, { useContext } from 'react'
-// import { AuthContext } from '../../context/AuthContext'
-// import { ToastContainer, toast } from 'react-toastify';
-// import { useLocation, useNavigate } from 'react-router';
-// import useAxios from '../../hooks/useAxios';
-// import Swal from 'sweetalert2'
+import Swal from "sweetalert2"
+import useAuth from "../../hooks/useAuth"
+import { useLocation, useNavigate } from "react-router"
+import useAxiosPublic from "../../hooks/useAxiosPublic"
+
 
 function LoginWithGoogle({ name }) {
 
-    // const { googleLogin } = useContext(AuthContext)
-    // const navigate = useNavigate()
-    // const location = useLocation()
-    // const axiosInsTance = useAxios()
+    const { googleLogin } = useAuth()
+    const navigate = useNavigate()
+    const location = useLocation()
+    const axiosPublic = useAxiosPublic()
 
     // after login redirect back
-    // const from = location.state?.from?.pathname || "/";
+    const from = location.state?.from?.pathname || "/";
 
-    const handleLoginWithGoogle = () => {
-        // googleLogin()
-        //     .then(async (result) => {
-        //         const user = result?.user
+    const handleLoginWithGoogle = async () => {
+        try {
+            const result = await googleLogin()
+            const user = result?.user
 
-        //         //  update user info in database
-        //         const userInfo = {
-        //             email: user.email,
-        //             role: "user", //default role
-        //             created_at: new Date().toISOString(),
-        //             last_log_in: new Date().toISOString
-        //         }
-        //         const res = await axiosInsTance.post("/users", userInfo)
-        //         console.log("user update info :", res.data)
+            if (!user) return
 
-        //         if (user) {
-        //             Swal.fire({
-        //                 position: "top-end",
-        //                 icon: "success",
-        //                 title: "Login successful",
-        //                 showConfirmButton: false,
-        //                 timer: 1500
-        //             });
-        //             navigate(from, { replace: true })
-        //         }
-        //     })
-        //     .catch(error => {
-        //         const errorMessage = error?.message
-        //         if (errorMessage) {
-        //             Swal.fire({
-        //                 position: "top-end",
-        //                 icon: "error",
-        //                 title: "Invalid email or password ❌",
-        //                 showConfirmButton: false,
-        //                 timer: 1500
-        //             });
-        //         }
-        //     })
+            // 1️⃣ Prepare user info
+            const userInfo = {
+                name: user.displayName,
+                email: user.email,
+                image: user.photoURL,
+                role: "user", // default role
+                created_at: new Date().toISOString()
+            }
+
+            // 2️⃣ Save user to database (if not exists)
+            const userRes = await axiosPublic.post("/users", userInfo)
+            console.log("User saved/checked in DB:", userRes.data)
+
+            // 3️⃣ Success Alert
+            Swal.fire({
+                position: "top-end",
+                icon: "success",
+                title: "Login successful",
+                showConfirmButton: false,
+                timer: 1500
+            })
+
+            // 4️⃣ Redirect previous page
+            navigate(from || "/", { replace: true })
+
+        } catch (error) {
+            Swal.fire({
+                position: "top-end",
+                icon: "error",
+                title: error.message,
+                showConfirmButton: false,
+                timer: 1500
+            })
+        }
     }
 
     return (

@@ -1,4 +1,8 @@
 import { useForm } from "react-hook-form";
+import useAuth from "../../hooks/useAuth";
+import { useState } from "react";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 // import { useContext, useState } from "react";
 // import Swal from 'sweetalert2';
 // import { AuthContext } from "../../context/AuthContext";
@@ -6,180 +10,178 @@ import { useForm } from "react-hook-form";
 
 function SendParcel() {
     const { register, handleSubmit, watch, reset } = useForm();
-    // const [cost, setCost] = useState(null);
-    // const { user } = useContext(AuthContext)
-    // const axiosSecure = useAxiosSecure()
+    const [cost, setCost] = useState(null);
+    const { user } = useAuth()
+    const axiosSecure = useAxiosSecure()
 
-    // const type = watch("type");
-    // const senderRegion = watch("senderRegion");
-    // const receiverRegion = watch("receiverRegion");
-    // const weight = watch("weight");
+    const type = watch("type");
+    const senderRegion = watch("senderRegion");
+    const receiverRegion = watch("receiverRegion");
+    const weight = watch("weight");
 
     // 📦 Pricing calculation logic with breakdown
-    // const calculateCost = (data) => {
-    //     const isWithinCity = senderRegion === receiverRegion;
+    const calculateCost = (data) => {
+        const isWithinCity = senderRegion === receiverRegion;
 
-    //     let baseCost = 0;
-    //     let extraCost = 0;
-    //     let weightCharge = 0;
-    //     let locationCharge = 0;
+        let baseCost = 0;
+        let extraCost = 0;
+        let weightCharge = 0;
+        let locationCharge = 0;
 
-    //     if (data.type === "document") {
-    //         baseCost = isWithinCity ? 60 : 80;
-    //         locationCharge = isWithinCity ? 0 : 20;
-    //     } else if (data.type === "non-document") {
-    //         if (data.weight <= 3) {
-    //             baseCost = isWithinCity ? 110 : 150;
-    //             locationCharge = isWithinCity ? 0 : 40;
-    //         } else {
-    //             baseCost = isWithinCity ? 110 : 150;
-    //             const extraWeight = data.weight - 3;
-    //             weightCharge = extraWeight * 40;
-    //             locationCharge = isWithinCity ? 0 : 40;
-    //             if (!isWithinCity) {
-    //                 locationCharge += 40; // Extra ৳40 for outside city
-    //             }
-    //         }
-    //     }
+        if (data.type === "document") {
+            baseCost = isWithinCity ? 60 : 80;
+            locationCharge = isWithinCity ? 0 : 20;
+        } else if (data.type === "non-document") {
+            if (data.weight <= 3) {
+                baseCost = isWithinCity ? 110 : 150;
+                locationCharge = isWithinCity ? 0 : 40;
+            } else {
+                baseCost = isWithinCity ? 110 : 150;
+                const extraWeight = data.weight - 3;
+                weightCharge = extraWeight * 40;
+                locationCharge = isWithinCity ? 0 : 40;
+                if (!isWithinCity) {
+                    locationCharge += 40; // Extra ৳40 for outside city
+                }
+            }
+        }
 
-    //     extraCost = weightCharge + locationCharge;
+        extraCost = weightCharge + locationCharge;
 
-    //     return {
-    //         total: baseCost + extraCost,
-    //         baseCost,
-    //         weightCharge,
-    //         locationCharge,
-    //         extraCost
-    //     };
-    // };
+        return {
+            total: baseCost + extraCost,
+            baseCost,
+            weightCharge,
+            locationCharge,
+            extraCost
+        };
+    };
 
     const onSubmit = (data) => {
 
-        console.log(data)
-        // const costBreakdown = calculateCost(data);
-        // setCost(costBreakdown.total);
+        const costBreakdown = calculateCost(data);
+        setCost(costBreakdown.total);
 
         // SweetAlert2 with cost breakdown and two buttons
-        // Swal.fire({
-        //     title: 'Delivery Cost Breakdown',
-        //     html: `
-        //         <div class="text-left">
-        //             <div class="bg-blue-50 p-4 rounded-lg mb-4">
-        //                 <p class="text-lg font-semibold text-blue-800 text-center">💰 Total Cost: ৳${costBreakdown.total}</p>
-        //             </div>
+        Swal.fire({
+            title: 'Delivery Cost Breakdown',
+            html: `
+                <div class="text-left">
+                    <div class="bg-blue-50 p-4 rounded-lg mb-4">
+                        <p class="text-lg font-semibold text-blue-800 text-center">💰 Total Cost: ৳${costBreakdown.total}</p>
+                    </div>
 
-        //             <div class="mb-4 p-3 bg-green-50 rounded-lg">
-        //                 <p class="text-sm font-medium text-green-800 mb-2">Parcel Details:</p>
-        //                 <div class="space-y-1 text-sm">
-        //                     <p><span class="font-medium">Type:</span> ${data.type === 'document' ? 'Document' : 'Non-Document'}</p>
-        //                     ${data.type === 'non-document' ? `<p><span class="font-medium">Weight:</span> ${data.weight} kg</p>` : ''}
-        //                     <p><span class="font-medium">Location:</span> ${senderRegion === receiverRegion ? 'Within City' : 'Different City/District'}</p>
-        //                 </div>
-        //             </div>
+                    <div class="mb-4 p-3 bg-green-50 rounded-lg">
+                        <p class="text-sm font-medium text-green-800 mb-2">Parcel Details:</p>
+                        <div class="space-y-1 text-sm">
+                            <p><span class="font-medium">Type:</span> ${data.type === 'document' ? 'Document' : 'Non-Document'}</p>
+                            ${data.type === 'non-document' ? `<p><span class="font-medium">Weight:</span> ${data.weight} kg</p>` : ''}
+                            <p><span class="font-medium">Location:</span> ${senderRegion === receiverRegion ? 'Within City' : 'Different City/District'}</p>
+                        </div>
+                    </div>
 
-        //             <div class="bg-gray-50 p-4 rounded-lg">
-        //                 <p class="text-sm font-medium text-gray-800 mb-3">Cost Breakdown:</p>
-        //                 <div class="space-y-2 text-sm">
-        //                     <div class="flex justify-between">
-        //                         <span class="text-gray-600">Base Cost:</span>
-        //                         <span class="font-medium">৳${costBreakdown.baseCost}</span>
-        //                     </div>
-        //                     ${costBreakdown.weightCharge > 0 ? `
-        //                     <div class="flex justify-between">
-        //                         <span class="text-gray-600">Weight Charge (${weight} kg):</span>
-        //                         <span class="font-medium">৳${costBreakdown.weightCharge}</span>
-        //                     </div>
-        //                     ` : ''}
-        //                     ${costBreakdown.locationCharge > 0 ? `
-        //                     <div class="flex justify-between">
-        //                         <span class="text-gray-600">Location Charge:</span>
-        //                         <span class="font-medium">৳${costBreakdown.locationCharge}</span>
-        //                     </div>
-        //                     ` : ''}
-        //                     <hr class="my-2 border-gray-300">
-        //                     <div class="flex justify-between font-semibold text-base">
-        //                         <span class="text-gray-800">Total Amount:</span>
-        //                         <span class="text-blue-600">৳${costBreakdown.total}</span>
-        //                     </div>
-        //                 </div>
-        //             </div>
-        //         </div>
-        //     `,
-        //     icon: 'info',
-        //     showCancelButton: true,
-        //     confirmButtonText: 'Proceed to Payment',
-        //     cancelButtonText: 'Continue Editing',
-        //     customClass: {
-        //         popup: 'rounded-2xl max-w-md',
-        //         confirmButton: 'bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors',
-        //         cancelButton: 'bg-stone-500 hover:bg-stone-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors',
-        //         actions: 'mt-4 gap-3'
-        //     },
-        //     buttonsStyling: false,
-        //     showCloseButton: true,
-        //     focusConfirm: false,
-        //     focusCancel: false
-        // }).then((result) => {
-        //     if (result.isConfirmed) {
-        //         Proceed to Payment logic here
-        //         const parcelData = {
-        //             ...data,
-        //             totalCost: costBreakdown.total,
-        //             createdBy: user?.email,
-        //             creation_date: new Date().toISOString(),
-        //             delivery_status: "pending",
-        //             payment_status: "unpaid",
-        //             tracking_id: `TRK${Date.now()}${Math.random().toString(36).substr(2, 9)}`
-        //         };
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <p class="text-sm font-medium text-gray-800 mb-3">Cost Breakdown:</p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Base Cost:</span>
+                                <span class="font-medium">৳${costBreakdown.baseCost}</span>
+                            </div>
+                            ${costBreakdown.weightCharge > 0 ? `
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Weight Charge (${weight} kg):</span>
+                                <span class="font-medium">৳${costBreakdown.weightCharge}</span>
+                            </div>
+                            ` : ''}
+                            ${costBreakdown.locationCharge > 0 ? `
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Location Charge:</span>
+                                <span class="font-medium">৳${costBreakdown.locationCharge}</span>
+                            </div>
+                            ` : ''}
+                            <hr class="my-2 border-gray-300">
+                            <div class="flex justify-between font-semibold text-base">
+                                <span class="text-gray-800">Total Amount:</span>
+                                <span class="text-blue-600">৳${costBreakdown.total}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonText: 'Proceed to Payment',
+            cancelButtonText: 'Continue Editing',
+            customClass: {
+                popup: 'rounded-2xl max-w-md',
+                confirmButton: 'bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors',
+                cancelButton: 'bg-stone-500 hover:bg-stone-600 text-white px-4 py-2 rounded-lg font-semibold text-sm transition-colors',
+                actions: 'mt-4 gap-3'
+            },
+            buttonsStyling: false,
+            showCloseButton: true,
+            focusConfirm: false,
+            focusCancel: false
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Proceed to Payment logic here
+                const parcelData = {
+                    ...data,
+                    totalCost: costBreakdown.total,
+                    createdBy: user?.email,
+                    creation_date: new Date().toISOString(),
+                    delivery_status: "pending",
+                    payment_status: "unpaid",
+                    tracking_id: `TRK${Date.now()}${Math.random().toString(36).substr(2, 9)}`
+                };
 
-        //         save parcelData in database
-        //         axiosSecure.post("/parcels", parcelData)
-        //             .then(res => {
-        //                 console.log(res.data)
-        //                 if (res?.data?.insertedId) {
+                //TODO: save parcelData in database
+                axiosSecure.post("/parcels", parcelData)
+                    .then(res => {
+                        if (res?.data?.insertedId) {
+                            
+                            // redirect to a payment page
+                                    Swal.fire({
+                                        title: 'Add Successful!',
+                                        html: `
+                                <div class="text-center">
+                                    <div class="text-green-500 text-5xl mb-3">✓</div>
+                                    <p class="text-lg font-semibold mb-2 text-green-800">Add Successfully!</p>
+                                    <p class="text-sm text-gray-600 mb-4">Your parcel has been booked and payment received.</p>
+                                    <div class="p-3 bg-green-50 rounded-lg border border-green-200">
+                                        <p class="text-sm"><span class="font-medium">Amount Paid:</span> ৳${costBreakdown.total}</p>
+                                        <p class="text-sm mt-1"><span class="font-medium">Parcel Type:</span> ${data.type === 'document' ? 'Document' : 'Non-Document'}</p>
+                                    </div>
+                                </div>
+                            `,
+                                        icon: 'success',
+                                        confirmButtonText: 'Done',
+                                        customClass: {
+                                            popup: 'rounded-2xl max-w-sm',
+                                            confirmButton: 'bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold text-sm'
+                                        }
+                                    });
+                        }
+                    })
 
-        //                     redirect to a payment page
-        //                     Swal.fire({
-        //                         title: 'Add Successful!',
-        //                         html: `
-        //                 <div class="text-center">
-        //                     <div class="text-green-500 text-5xl mb-3">✓</div>
-        //                     <p class="text-lg font-semibold mb-2 text-green-800">Add Successfully!</p>
-        //                     <p class="text-sm text-gray-600 mb-4">Your parcel has been booked and payment received.</p>
-        //                     <div class="p-3 bg-green-50 rounded-lg border border-green-200">
-        //                         <p class="text-sm"><span class="font-medium">Amount Paid:</span> ৳${costBreakdown.total}</p>
-        //                         <p class="text-sm mt-1"><span class="font-medium">Parcel Type:</span> ${data.type === 'document' ? 'Document' : 'Non-Document'}</p>
-        //                     </div>
-        //                 </div>
-        //             `,
-        //                         icon: 'success',
-        //                         confirmButtonText: 'Done',
-        //                         customClass: {
-        //                             popup: 'rounded-2xl max-w-sm',
-        //                             confirmButton: 'bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold text-sm'
-        //                         }
-        //                     });
-        //                 }
-        //             })
-
-        //         reset();
-        //         setCost(null);
-        //     } else if (result.dismiss === Swal.DismissReason.cancel) {
-        //         Continue Editing - user can modify the form
-        //         Swal.fire({
-        //             title: 'Continue Editing',
-        //             text: 'You can modify your parcel details.',
-        //             icon: 'info',
-        //             confirmButtonText: 'OK',
-        //             customClass: {
-        //                 popup: 'rounded-2xl',
-        //                 confirmButton: 'bg-stone-500 hover:bg-stone-600 text-white px-4 py-2 rounded-lg font-semibold text-sm'
-        //             },
-        //             timer: 2000,
-        //             timerProgressBar: true
-        //         });
-        //     }
-        // });
+                reset();
+                setCost(null);
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                // Continue Editing - user can modify the form
+                Swal.fire({
+                    title: 'Continue Editing',
+                    text: 'You can modify your parcel details.',
+                    icon: 'info',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        popup: 'rounded-2xl',
+                        confirmButton: 'bg-stone-500 hover:bg-stone-600 text-white px-4 py-2 rounded-lg font-semibold text-sm'
+                    },
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+            }
+        });
     };
 
     return (

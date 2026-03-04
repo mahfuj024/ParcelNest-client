@@ -1,29 +1,42 @@
-import { Link, NavLink } from "react-router";
+import { Link, NavLink, useNavigate } from "react-router";
 import Logo from "./Shared/Logo";
-
+import useAuth from "../hooks/useAuth";
+import Swal from "sweetalert2";
 
 function Navbar() {
-  // const { logOut, user } = useContext(AuthContext);
 
-  // const handleLogOut = () => {
-  //   logOut()
-  //     .then(() => {
-  //       toast("Log out");
-  //     })
-  //     .catch(() => {
-  //       toast("An error happened.");
-  //     });
-  // };
+  const { user, logOut } = useAuth()
+  const navigate = useNavigate()
+
+  const handleLogOut = () => {
+    logOut()
+      .then(() => {
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Logout Successful",
+          showConfirmButton: false,
+          timer: 1500
+        });
+        navigate("/")
+      })
+      .catch(() => {
+        Swal.fire({
+          position: "top-end",
+          icon: "error",
+          title: "Logout Failed!",
+          showConfirmButton: false,
+          timer: 1500
+        });
+      });
+  };
 
   const navLinks = [
     { id: "home", path: "/", label: "Home" },
     { id: "coverage", path: "/coverage", label: "Coverage" },
     { id: "send", path: "/sendParcel", label: "Send A Parcel" },
     { id: "about", path: "/aboutUs", label: "About Us" },
-
-    // FIXED
     { id: "dashboard", path: "/dashboard", label: "Dashboard" },
-
     { id: "rider", path: "/beArider", label: "Be a Rider" },
   ];
 
@@ -82,22 +95,20 @@ function Navbar() {
 
       {/* Navbar End */}
       <div className="navbar-end">
-        {/* {user ? (
-          <button onClick={handleLogOut} className="btn bg-primary border-none font-bold text-sm md:text-base">
-            Log out
-          </button>
-        ) : (
-          <Link to="/login" className="btn bg-white">
-            Sign In
+        {
+          user ? <Link>
+            <button onClick={handleLogOut} className="btn bg-white mr-4">Log out</button>
           </Link>
-        )} */}
-        <Link to="/login">
-          <button className="btn bg-white mr-4">Log in</button>
-        </Link>
+            :
+            <Link to="/login">
+              <button className="btn bg-white mr-4">Log in</button>
+            </Link>
+        }
 
-        <Link to="/register">
+
+        {/* <Link to="/register">
           <button className="btn bg-white ">Register</button>
-        </Link>
+        </Link> */}
 
       </div>
 
