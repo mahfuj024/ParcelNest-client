@@ -20,7 +20,7 @@ function DashboardLayout() {
   const location = useLocation();
 
   // 🔥TODO: admin or user from database থেকে আসবে
-  const isAdmin = false; // true = admin | false = user
+  const isAdmin = true; // true = admin | false = user
 
   // User Menu
   const userNavItems = [
@@ -34,6 +34,7 @@ function DashboardLayout() {
     { name: "Admin Home", path: "admin-home", icon: <FaHome /> },
     { name: "All Users", path: "all-users", icon: <FaUsers /> },
     { name: "All Parcels", path: "all-parcels", icon: <FaBoxOpen /> },
+    { name: "All Riders", path: "all-riders", icon: <FaMotorcycle /> },
   ];
 
   // Main Website Menu

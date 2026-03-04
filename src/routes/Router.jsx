@@ -22,6 +22,7 @@ import PaymentHistory from "../pages/Dashboard/UserDashboard/PaymentHistory";
 import AllUsers from "../pages/Dashboard/AdminDashboard/AllUsers";
 import PrivateRoute from "./PrivateRoute";
 import AllParcels from "../pages/Dashboard/AdminDashboard/AllParcels";
+import AllRiders from "../pages/Dashboard/AdminDashboard/AllRiders";
 
 
 // Router
@@ -123,6 +124,10 @@ export const router = createBrowserRouter([
       {
         path : "all-parcels",
         element : <AllParcels></AllParcels>
+      },
+      {
+        path : "all-riders",
+        element : <AllRiders></AllRiders>
       }
 
 

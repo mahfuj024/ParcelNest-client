@@ -1,25 +1,13 @@
-// import { useContext, useEffect } from "react";
 import RiderImage from "../../assets/agent-pending.png"
-// import { AuthContext } from "../../context/AuthContext";
 import { useForm } from "react-hook-form";
-// import useAxiosSecure from "../../hooks/useAxiosSecure";
-// import Swal from "sweetalert2";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
 function BeARider() {
 
-    // const { user } = useContext(AuthContext)
-    // const axiosSecure = useAxiosSecure()
+    const axiosSecure = useAxiosSecure()
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm()
-
-    // useEffect(() => {
-    //     if (user) {
-    //         reset({
-    //             name: user.displayName || "",
-    //             email: user.email || "",
-    //         });
-    //     }
-    // }, [user, reset]);
 
     const divisions = [
         "Dhaka",
@@ -33,26 +21,25 @@ function BeARider() {
     ];
 
     const onSubmit = (data) => {
-        // const riderData = {
-        //     ...data,
-        //     created_at: new Date().toISOString(),
-        //     status: "pending"
-        // };
-        // API call and riderData save in database
-        // axiosSecure.post("/riders", riderData)
-        //     .then(res => {
-        //         if (res.data.insertedId) {
-        //             Swal.fire({
-        //                 icon: "success",
-        //                 title: "Application Submitted",
-        //                 text: "Your application is pending approval",
-        //                 draggable: true
-        //             });
-        //         }
-        //         console.log(res.data)
-        //     })
+        const riderData = {
+            ...data,
+            created_at: new Date().toISOString(),
+            status: "pending"
+        };
+        //RiderData save in database
+        axiosSecure.post("/riders", riderData)
+            .then(res => {
+                if (res.data.insertedId) {
+                    Swal.fire({
+                        icon: "success",
+                        title: "Application Submitted",
+                        text: "Your application is pending approval",
+                        draggable: true
+                    });
+                }
+            })
 
-        // reset()
+        reset()
     };
 
 
