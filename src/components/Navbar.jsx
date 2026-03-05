@@ -97,11 +97,16 @@ function Navbar() {
       <div className="navbar-end">
         {
           user ? <Link>
-            <button onClick={handleLogOut} className="btn bg-white mr-4">Log out</button>
+            <button
+              onClick={handleLogOut}
+              className="btn bg-[#EAEDED] hover:bg-[#dde0e0] text-[12px] md:text-[14px] lg:text-[15px] outline-none border-none mr-4 transition-all duration-300 ease-in-out hover:shadow-md"
+            >
+              Log out
+            </button>
           </Link>
             :
             <Link to="/login">
-              <button className="btn bg-white mr-4">Log in</button>
+              <button className="btn bg-[#EAEDED] hover:bg-[#dde0e0] text-[12px] md:text-[14px] lg:text-[15px] outline-none border-none mr-4 transition-all duration-300 ease-in-out hover:shadow-md">Log in</button>
             </Link>
         }
 

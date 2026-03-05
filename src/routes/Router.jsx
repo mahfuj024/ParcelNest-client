@@ -23,6 +23,7 @@ import AllUsers from "../pages/Dashboard/AdminDashboard/AllUsers";
 import PrivateRoute from "./PrivateRoute";
 import AllParcels from "../pages/Dashboard/AdminDashboard/AllParcels";
 import AllRiders from "../pages/Dashboard/AdminDashboard/AllRiders";
+import ActiveRiders from "../pages/Dashboard/AdminDashboard/ActiveRiders";
 
 
 // Router
@@ -128,6 +129,10 @@ export const router = createBrowserRouter([
       {
         path : "all-riders",
         element : <AllRiders></AllRiders>
+      },
+      {
+        path : "active-riders",
+        element : <ActiveRiders></ActiveRiders>
       }
 
 

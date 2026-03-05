@@ -53,7 +53,7 @@ function BeARider() {
                 <p className='mt-3 md:mt-4 lg:mt-6 text-sm md:text-base'>Enjoy fast, reliable parcel delivery with real-time tracking and zero hassle. From personal <br className='hidden md:block' /> packages to business shipments — we deliver on time, every time.</p>
 
                 {/* divider */}
-                <hr className="border-t-1 border-[#0000001A] mt-4 md:mt-6 lg:mt-12" />
+                <hr className="border-t border-[#0000001A] mt-4 md:mt-6 lg:mt-12" />
             </div>
 
             <div className="hero mt-4 md:mt-6 lg:mt-12">

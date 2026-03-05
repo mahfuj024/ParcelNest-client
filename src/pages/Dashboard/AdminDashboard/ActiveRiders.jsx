@@ -3,21 +3,21 @@ import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
 import Swal from "sweetalert2";
 
-function AllRiders() {
+function ActiveRiders() {
     const axiosSecure = useAxiosSecure();
     const [showAll, setShowAll] = useState(false);
 
     const { isPending, error, data: riders = [], refetch } = useQuery({
-        queryKey: ["allRiders"],
+        queryKey: ["activeRiders"],
         queryFn: async () => {
-            const res = await axiosSecure.get("/riders");
+            const res = await axiosSecure.get("/riders/active"); // Fixed: removed query param
             return res.data;
         }
     });
 
     const handleStatusToggle = async (rider) => {
         try {
-            const newStatus = rider.status === "pending" ? "active" : "pending";
+            const newStatus = rider.status === "active" ? "pending" : "active";
             const res = await axiosSecure.patch(`/riders/${rider._id}/status`, {
                 status: newStatus
             });
@@ -36,17 +36,17 @@ function AllRiders() {
     }
 
     if (error) {
-        return <p className="text-center mt-10">Error loading riders</p>;
+        return <p className="text-center mt-10">Error loading active riders</p>;
     }
 
     const displayedRiders = showAll ? riders : riders.slice(0, 8);
-    console.log(riders)
+
     return (
         <div className="max-w-7xl mx-auto">
 
             {/* Title */}
             <h1 className="cinzel-font text-2xl md:text-3xl lg:text-4xl font-bold text-center my-3 md:my-3 lg:my-4">
-                All Riders
+                Active Riders
             </h1>
 
             <div className="bg-white p-1 sm:p-4 md:p-6 lg:p-9 rounded-lg md:rounded-xl mt-4 md:mt-5 lg:mt-7">
@@ -54,7 +54,7 @@ function AllRiders() {
                 {/* Top Section */}
                 <div className="flex justify-between items-center mb-2 md:mb-6">
                     <h1 className="cinzel-font text-lg md:text-xl mt-3 md:mt-0 lg:text-[26px] font-bold">
-                        Total Riders : {riders.length}
+                        Total Active Riders : {riders.length}
                     </h1>
                 </div>
 
@@ -83,12 +83,12 @@ function AllRiders() {
                                     <td className="text-center">
                                         <button
                                             onClick={() => handleStatusToggle(rider)}
-                                            className={`px-3 py-1 rounded-full font-semibold cursor-pointer transition ${rider.status === "pending"
-                                                    ? "bg-yellow-400 text-black hover:bg-yellow-500"
-                                                    : "bg-green-500 text-white hover:bg-green-600"
+                                            className={`px-3 py-1 rounded-full font-semibold cursor-pointer transition ${rider.status === "active"
+                                                    ? "bg-green-500 text-white hover:bg-green-600"
+                                                    : "bg-yellow-400 text-black hover:bg-yellow-500"
                                                 }`}
                                         >
-                                            {rider.status || "pending"}
+                                            {rider.status || "active"}
                                         </button>
                                     </td>
                                 </tr>
@@ -109,12 +109,12 @@ function AllRiders() {
                                 Status:{" "}
                                 <button
                                     onClick={() => handleStatusToggle(rider)}
-                                    className={`px-3 py-1 rounded-full font-semibold cursor-pointer transition ${rider.status === "pending"
-                                            ? "bg-yellow-400 text-black hover:bg-yellow-500"
-                                            : "bg-green-500 text-white hover:bg-green-600"
+                                    className={`px-3 py-1 rounded-full font-semibold cursor-pointer transition ${rider.status === "active"
+                                            ? "bg-green-500 text-white hover:bg-green-600"
+                                            : "bg-yellow-400 text-black hover:bg-yellow-500"
                                         }`}
                                 >
-                                    {rider.status || "pending"}
+                                    {rider.status || "active"}
                                 </button>
                             </p>
                         </div>
@@ -138,4 +138,4 @@ function AllRiders() {
     );
 }
 
-export default AllRiders;
+export default ActiveRiders;
